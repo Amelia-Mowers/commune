@@ -3,6 +3,7 @@ use bevy::{
 };
 
 use crate::screens::Screen;
+use crate::game::tray::ContainingTray;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Card>();
@@ -26,6 +27,7 @@ fn spawn_cards(
     commands.spawn((
         Name::new("Card"),
         Card,
+        ContainingTray::default(),
         Dragging(false),
         Sprite::from_color(Color::WHITE, Vec2::splat(80.0)),
         Transform::from_translation(Vec3::new(-100.0, 0.0, 1.0)),
@@ -37,6 +39,7 @@ fn spawn_cards(
     commands.spawn((
         Name::new("Card"),
         Card,
+        ContainingTray::default(),
         Dragging(false),
         Sprite::from_color(Color::srgb(0.86, 0.08, 0.24), Vec2::splat(80.0)),
         Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
@@ -48,6 +51,7 @@ fn spawn_cards(
     commands.spawn((
         Name::new("Card"),
         Card,
+        ContainingTray::default(),
         Dragging(false),
         Sprite::from_color(Color::srgb(0.0, 0.5, 0.0), Vec2::splat(80.0)),
         Transform::from_translation(Vec3::new(100.0, 0.0, 1.0)),
