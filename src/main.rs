@@ -12,7 +12,9 @@ mod menus;
 mod screens;
 mod theme;
 
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, prelude::*, render::camera::ScalingMode};
+
+const GAME_HEIGHT: f32 = 800.0;
 
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
@@ -98,5 +100,14 @@ struct Pause(pub bool);
 struct PausableSystems;
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn((Name::new("Camera"), Camera2d));
+    commands.spawn((
+        Name::new("Camera"),
+        Camera2d,
+        Projection::Orthographic(OrthographicProjection {
+            scaling_mode: ScalingMode::FixedVertical {
+                viewport_height: GAME_HEIGHT,
+            },
+            ..OrthographicProjection::default_2d()
+        }),
+    ));
 }

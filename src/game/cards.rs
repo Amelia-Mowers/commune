@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::GAME_HEIGHT;
 use crate::game::tray::ContainingTray;
 use crate::screens::Screen;
 
@@ -70,12 +71,15 @@ fn drag_card(
     trigger: Trigger<Pointer<Drag>>,
     mut transforms: Query<&mut Transform>,
     mut dragging: Query<&mut Dragging>,
+    window: Query<&Window>,
 ) {
     *dragging.get_mut(trigger.target()).unwrap() = Dragging(true);
     let mut transform = transforms.get_mut(trigger.target()).unwrap();
     let drag = trigger.event();
-    transform.translation.x += drag.delta.x;
-    transform.translation.y -= drag.delta.y;
+    let window = window.single();
+    let scale = GAME_HEIGHT / window.unwrap().resolution.height();
+    transform.translation.x += drag.delta.x * scale;
+    transform.translation.y -= drag.delta.y * scale;
     transform.translation.z = 3.0;
 }
 
