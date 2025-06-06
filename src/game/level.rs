@@ -39,11 +39,9 @@ pub fn spawn_level(
         Transform::default(),
         Visibility::default(),
         StateScoped(Screen::Gameplay),
-        children![
-            (
-                Name::new("Gameplay Music"),
-                // music(level_assets.music.clone())
-            )
-        ],
+        children![(
+            Name::new("Gameplay Music"),
+            // music(level_assets.music.clone())
+        )],
     ));
 }

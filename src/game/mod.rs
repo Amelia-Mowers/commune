@@ -5,16 +5,12 @@
 
 use bevy::prelude::*;
 
-pub mod level;
 mod cards;
+pub mod level;
 mod tray;
 // mod movement;
 // pub mod player;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((
-        level::plugin,
-        cards::plugin,
-        tray::plugin,
-    ));
+    app.add_plugins((level::plugin, cards::plugin, tray::plugin));
 }

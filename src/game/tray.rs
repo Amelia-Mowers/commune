@@ -1,21 +1,13 @@
-use bevy::{
-    prelude::*,
-};
-use std::cmp;
-use crate::screens::Screen;
 use crate::game::cards::Card;
 use crate::game::cards::Dragging;
+use crate::screens::Screen;
+use bevy::prelude::*;
+use std::cmp;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Tray>();
-    app.add_systems(
-        OnEnter(Screen::Gameplay),
-        spawn_trays,
-    );
-    app.add_systems(
-        Update,
-        update_cards_pos,
-    );
+    app.add_systems(OnEnter(Screen::Gameplay), spawn_trays);
+    app.add_systems(Update, update_cards_pos);
 }
 
 #[derive(Component, Debug, Clone, PartialEq, Eq, Default, Reflect, Deref, DerefMut)]
@@ -26,26 +18,26 @@ pub struct ContainingTray(Option<Entity>);
 #[reflect(Component)]
 pub struct Tray(Vec<Entity>);
 
-fn spawn_trays(
-    mut commands: Commands,
-) {
-    commands.spawn((
-        Name::new("Tray"),
-        Tray::default(),
-        Sprite::from_color(Color::BLACK, Vec2::new(320.0, 200.0)),
-        Transform::from_translation(Vec3::new(0.0, -200.0, 0.0)),
-        Pickable::default(),
-    ))
-    .observe(add_card_to_tray);
+fn spawn_trays(mut commands: Commands) {
+    commands
+        .spawn((
+            Name::new("Tray"),
+            Tray::default(),
+            Sprite::from_color(Color::BLACK, Vec2::new(320.0, 200.0)),
+            Transform::from_translation(Vec3::new(0.0, -200.0, 0.0)),
+            Pickable::default(),
+        ))
+        .observe(add_card_to_tray);
 
-    commands.spawn((
-        Name::new("Tray"),
-        Tray::default(),
-        Sprite::from_color(Color::BLACK, Vec2::new(320.0, 200.0)),
-        Transform::from_translation(Vec3::new(0.0, 200.0, 0.0)),
-        Pickable::default(),
-    ))
-    .observe(add_card_to_tray);
+    commands
+        .spawn((
+            Name::new("Tray"),
+            Tray::default(),
+            Sprite::from_color(Color::BLACK, Vec2::new(320.0, 200.0)),
+            Transform::from_translation(Vec3::new(0.0, 200.0, 0.0)),
+            Pickable::default(),
+        ))
+        .observe(add_card_to_tray);
 }
 
 fn add_card_to_tray(
@@ -60,9 +52,7 @@ fn add_card_to_tray(
     let hit_position = trigger.event().hit.position.unwrap(); //Vec3
 
     if cards_query.contains(dragged_entity) {
-        if let Ok(mut containing_tray) =
-            containing_trays_query.get_mut(dragged_entity)
-        {
+        if let Ok(mut containing_tray) = containing_trays_query.get_mut(dragged_entity) {
             if let Some(prev_tray_entity) = containing_tray.0 {
                 if let Ok(mut prev_tray) = trays_query.get_mut(prev_tray_entity) {
                     prev_tray.retain(|&x| x != dragged_entity);
@@ -110,14 +100,16 @@ fn update_cards_pos(
             if !(**dragging.get(*card).unwrap()) {
                 let card_trans = transforms.get(*card).unwrap().translation;
                 let card_xy = card_trans.truncate();
-                let dest = tray_transform.truncate() + Vec2::new((cmp::max(len - 1, 0) as f32 * -CARD_GAP)*0.5 + i as f32 * CARD_GAP, 0.0);
+                let dest = tray_transform.truncate()
+                    + Vec2::new(
+                        (cmp::max(len - 1, 0) as f32 * -CARD_GAP) * 0.5 + i as f32 * CARD_GAP,
+                        0.0,
+                    );
 
-                transforms.get_mut(*card).unwrap().translation =
-                    card_xy
+                transforms.get_mut(*card).unwrap().translation = card_xy
                     .lerp(dest, 10.0 * time.delta_secs())
                     .extend(card_trans.z);
             }
         }
     }
 }
-
